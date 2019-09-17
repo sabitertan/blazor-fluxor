@@ -21,7 +21,7 @@ More sample projects will be added as the framework develops.
 
 ## What's new
 
-### New in 0.33.0
+### New in 0.33.1
 - Allow multiple reducers in a class (and static reducers) with `[ReducerMethod]`
 - Allow multiple effects in a class (and static effects) with `[EffectMethod]`
 - Removed `MultiActionReducer<TState>` due to new `ReducerMethodAttribute`
