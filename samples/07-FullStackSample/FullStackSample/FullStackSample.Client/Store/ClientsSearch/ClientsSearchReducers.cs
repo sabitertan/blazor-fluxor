@@ -6,6 +6,7 @@ namespace FullStackSample.Client.Store.ClientsSearch
 {
 	public class ClientsSearchReducers
 	{
+		[ReducerMethod]
 		public static ClientsSearchState GoReducer(ClientsSearchState state, Go action)
 		{
 				string uri = new Uri(action.NewUri ?? "").AbsolutePath.ToLowerInvariant();
@@ -14,6 +15,7 @@ namespace FullStackSample.Client.Store.ClientsSearch
 				return ClientsSearchState.Default;
 		}
 
+		[ReducerMethod]
 		public static ClientsSearchState ClientsSearchQueryReducer(
 			ClientsSearchState state,
 			Api.Requests.ClientsSearchQuery action) =>
@@ -23,6 +25,7 @@ namespace FullStackSample.Client.Store.ClientsSearch
 					errorMessage: null,
 					clients: null);
 
+		[ReducerMethod]
 		public static ClientsSearchState ClientsSearchResponseReducer(
 			ClientsSearchState state,
 			Api.Requests.ClientsSearchResponse action) =>

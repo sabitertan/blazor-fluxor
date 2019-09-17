@@ -6,10 +6,17 @@
 
 @code
 {
-	[Parameter] public bool MatchWholeUrl { get; set; } = false;
-	[Parameter] public string Css { get; set; }
-	[Parameter] public string Url { get; set; }
-	[Parameter] public string LinkText { get; set; }
+	[Parameter]
+	public bool MatchWholeUrl { get; set; } = false;
+
+	[Parameter]
+	public string Css { get; set; }
+
+	[Parameter]
+	public string Url{ get; set; }
+
+	[Parameter]
+	public string LinkText { get; set; }
 
 	private NavLinkMatch NavLinkMatch => MatchWholeUrl ? NavLinkMatch.All : NavLinkMatch.Prefix;
 }

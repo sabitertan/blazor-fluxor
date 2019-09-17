@@ -30,6 +30,7 @@ namespace FullStackSample.Client.Store.ClientsSearch
 						name: x.Name)
 					)
 				);
+
 			}
 			catch
 			{
