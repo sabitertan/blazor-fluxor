@@ -31,14 +31,14 @@ Issues fixed
 
 ### New in 0.32.0 
 - Update to Blazor RC1
-- 
+
 ### New in 0.31.0 
 - Remove White=Positive / Black=Negative terms - Use Include/Exclude instead.
 - Update to Blazor preview 9
-- 
+
 ### New in 0.30.0
 - Added a new class `MultiActionReducer<TState>` that allows you to combine multiple reducers into a single class.
-- 
+
 ### New in 0.29.0
 - Fixed a harmless null reference error when running server-side
 - Fixed FlightFinder sampl's UI and binding
