@@ -1,29 +1,29 @@
-﻿using Blazor.Fluxor;
-using FullStackSample.Client.Store.EntityStateEvents;
+﻿using FullStackSample.Client.Store.EntityStateEvents;
 using System.Linq;
 using FullStackSample.Client.Extensions;
+using Blazor.Fluxor;
 
 namespace FullStackSample.Client.Store.ClientsSearch
 {
-	public class StateNotificationReducers : MultiActionReducer<ClientsSearchState>
+	public static class StateNotificationReducers
 	{
-		public StateNotificationReducers()
+		[ReducerMethod]
+		public static ClientsSearchState ClientStateNotificationReducer(
+			ClientsSearchState state,
+			ClientStateNotification action)
 		{
-			AddActionReducer<ClientStateNotification>((state, action) =>
+			var clients = state.Clients.UpdateState(action);
+			if (state.Name != null)
 			{
-				var clients = state.Clients.UpdateState(action);
-				if (state.Name != null)
-				{
-					string searchName = state.Name.ToLowerInvariant();
-					clients = clients
-						.Where(x => (x.Name ?? "").ToLowerInvariant().Contains(searchName));
-				}
-				return new ClientsSearchState(
-					isSearching: state.IsSearching,
-					name: state.Name,
-					errorMessage: state.ErrorMessage,
-					clients: clients);
-			});
+				string searchName = state.Name.ToLowerInvariant();
+				clients = clients
+					.Where(x => (x.Name ?? "").ToLowerInvariant().Contains(searchName));
+			}
+			return new ClientsSearchState(
+				isSearching: state.IsSearching,
+				name: state.Name,
+				errorMessage: state.ErrorMessage,
+				clients: clients);
 		}
 	}
 }

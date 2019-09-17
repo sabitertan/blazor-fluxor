@@ -4,32 +4,32 @@ using System;
 
 namespace FullStackSample.Client.Store.ClientsSearch
 {
-	public class ClientsSearchReducers : MultiActionReducer<ClientsSearchState>
+	public class ClientsSearchReducers
 	{
-		public ClientsSearchReducers()
+		public static ClientsSearchState GoReducer(ClientsSearchState state, Go action)
 		{
-			AddActionReducer<Go>((state, action) =>
-			{
 				string uri = new Uri(action.NewUri ?? "").AbsolutePath.ToLowerInvariant();
 				if (uri.StartsWith("/clients"))
 					return state;
 				return ClientsSearchState.Default;
-			});
+		}
 
-			AddActionReducer<Api.Requests.ClientsSearchQuery>((state, query) =>
+		public static ClientsSearchState ClientsSearchQueryReducer(
+			ClientsSearchState state,
+			Api.Requests.ClientsSearchQuery action) =>
 				new ClientsSearchState(
 					isSearching: true,
-					name: query.Name,
+					name: action.Name,
 					errorMessage: null,
-					clients: null
-				));
+					clients: null);
 
-			AddActionReducer<Api.Requests.ClientsSearchResponse>((state, response) =>
+		public static ClientsSearchState ClientsSearchResponseReducer(
+			ClientsSearchState state,
+			Api.Requests.ClientsSearchResponse action) =>
 				new ClientsSearchState(
 						isSearching: false,
 						name: state.Name,
-						errorMessage: response.ErrorMessage,
-						clients: response.Clients));
-		}
+						errorMessage: action.ErrorMessage,
+						clients: action.Clients);
 	}
 }

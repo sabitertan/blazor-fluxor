@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FlightFinder.Client.Store
 {
-	public class FetchAirportsEffect : Effect<FetchAirportsAction>
+	public class FetchAirportsEffect
 	{
 		private readonly HttpClient HttpClient;
 
@@ -16,7 +16,8 @@ namespace FlightFinder.Client.Store
 			HttpClient = httpClient;
 		}
 
-		protected async override Task HandleAsync(FetchAirportsAction action, IDispatcher dispatcher)
+		[EffectMethod]
+		public async Task HandleFetchAirportsActionAsync(FetchAirportsAction action, IDispatcher dispatcher)
 		{
 			Airport[] airports = Array.Empty<Airport>();
 			try
@@ -31,7 +32,7 @@ namespace FlightFinder.Client.Store
 			dispatcher.Dispatch(completeAction);
 		}
 
-		[Effect]
+		[EffectMethod]
 		public async Task HandleSearchActionAsync(SearchAction action, IDispatcher dispatcher)
 		{
 			try

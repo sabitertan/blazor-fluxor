@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace FullStackSample.Client.Store.ClientCreate
 {
-	public class ClientCreateReducers : MultiActionReducer<ClientCreateState>
+	public static class ClientCreateReducers
 	{
-		public ClientCreateReducers()
-		{
-			AddActionReducer<Go>((state, action) =>
+		public static ClientCreateState GoReducer(ClientCreateState state, Go action)
 			{
 				string uri = new Uri(action.NewUri ?? "").AbsolutePath.ToLowerInvariant();
 				if (uri.StartsWith("/clients/create"))
@@ -21,21 +19,24 @@ namespace FullStackSample.Client.Store.ClientCreate
 					isExecutingApi: false,
 					errorMessage: null,
 					validationErrors: null);
-			});
+			}
 
-			AddActionReducer<Api.Requests.ClientCreateCommand>((state, action) =>
+		public static ClientCreateState ClientCreateCommandReducer(
+			ClientCreateState state,
+			Api.Requests.ClientCreateCommand action) =>
 				new ClientCreateState(
 								client: state.Client,
 								isExecutingApi: true,
 								errorMessage: null,
-								validationErrors: null));
+								validationErrors: null);
 
-			AddActionReducer<Api.Requests.ClientCreateResponse>((state, action) =>
+		public static ClientCreateState ClientCreateResponseReducer(
+			ClientCreateState state,
+			Api.Requests.ClientCreateResponse action) =>
 				new ClientCreateState(
 					client: state.Client,
 					isExecutingApi: false,
 					errorMessage: action.ErrorMessage,
-					validationErrors: action.ValidationErrors));
-		}
+					validationErrors: action.ValidationErrors);
 	}
 }

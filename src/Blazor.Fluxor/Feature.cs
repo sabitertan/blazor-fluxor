@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Blazor.Fluxor
 {
@@ -32,7 +33,8 @@ namespace Blazor.Fluxor
 		/// </summary>
 		protected readonly List<IReducer<TState>> Reducers = new List<IReducer<TState>>();
 
-		private MethodInfo BlazorComponentStateHasChangedMethod;
+		private Func<ComponentBase, Action, Task> ComponentBaseInvokeAsync;
+		private Action<ComponentBase> ComponentBaseStateHasChanged;
 		private List<WeakReference<ComponentBase>> ObservingComponents = new List<WeakReference<ComponentBase>>();
 
 		/// <summary>
@@ -41,7 +43,22 @@ namespace Blazor.Fluxor
 		public Feature()
 		{
 			State = GetInitialState();
-			BlazorComponentStateHasChangedMethod = typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.NonPublic | BindingFlags.Instance);
+			MethodInfo invokeAsyncMethodInfo =
+				typeof(ComponentBase).GetMethod(
+					name: "InvokeAsync",
+					bindingAttr: BindingFlags.NonPublic | BindingFlags.Instance,
+					binder: null,
+					types: new[] { typeof(Action) },
+					modifiers: null);
+			ComponentBaseInvokeAsync = (Func<ComponentBase, Action, Task>)
+				Delegate.CreateDelegate(typeof(Func<ComponentBase, Action, Task>), invokeAsyncMethodInfo);
+
+			MethodInfo stateHasChangedMethodInfo = 
+				typeof(ComponentBase).GetMethod(
+					name: "StateHasChanged",
+					bindingAttr: BindingFlags.NonPublic | BindingFlags.Instance);
+
+			ComponentBaseStateHasChanged = (Action<ComponentBase>)Delegate.CreateDelegate(typeof(Action<ComponentBase>), stateHasChangedMethodInfo);
 		}
 
 		private TState _State;
@@ -106,11 +123,17 @@ namespace Blazor.Fluxor
 				subscription.TryGetTarget(out ComponentBase subscriber);
 				if (subscriber != null)
 				{
-					// Keep a reference to the subscribers stop them being collected before we have finished
+					// Keep a reference to the subscribers to stop them being collected before we have finished
 					subscribers.Add(subscriber);
+
 					// Create a callback
-					callbacks.Add(() => BlazorComponentStateHasChangedMethod.Invoke(subscriber, null));
-					// Add this observer to the replacement list
+					Action invokeStateHasChanged = () => ComponentBaseStateHasChanged(subscriber);
+					Action invokeAsync = () => ComponentBaseInvokeAsync(subscriber, invokeStateHasChanged);
+
+					// Add the callback to a list to be executed
+					callbacks.Add(invokeAsync);
+
+					// Add this observer to the replacement list of active subscribers
 					newStateChangedCallbacks.Add(subscription);
 				}
 			}
