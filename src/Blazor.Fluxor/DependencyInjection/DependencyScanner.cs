@@ -59,7 +59,7 @@ namespace Blazor.Fluxor.DependencyInjection
 				discoveredEffectMethods);
 		}
 
-		private static void RegisterStore(IServiceCollection serviceCollection, 
+		private static void RegisterStore(IServiceCollection serviceCollection,
 			IEnumerable<DiscoveredFeatureClass> discoveredFeatureClasses,
 			IEnumerable<DiscoveredEffectClass> discoveredEffectClasses,
 			IEnumerable<DiscoveredEffectMethod> discoveredEffectMethods)
@@ -72,19 +72,19 @@ namespace Blazor.Fluxor.DependencyInjection
 			{
 				var browserInteropService = serviceProvider.GetService<IBrowserInteropService>();
 				var store = new Store(browserInteropService);
-				foreach(DiscoveredFeatureClass discoveredFeatureInfo in discoveredFeatureClasses)
+				foreach (DiscoveredFeatureClass discoveredFeatureClass in discoveredFeatureClasses)
 				{
-					var feature = (IFeature)serviceProvider.GetService(discoveredFeatureInfo.FeatureInterfaceGenericType);
+					var feature = (IFeature)serviceProvider.GetService(discoveredFeatureClass.FeatureInterfaceGenericType);
 					store.AddFeature(feature);
 				}
 
-				foreach(DiscoveredEffectClass discoveredEffectInfo in discoveredEffectClasses)
+				foreach (DiscoveredEffectClass discoveredEffectClass in discoveredEffectClasses)
 				{
-					var effect = (IEffect)serviceProvider.GetService(discoveredEffectInfo.ImplementingType);
+					var effect = (IEffect)serviceProvider.GetService(discoveredEffectClass.ImplementingType);
 					store.AddEffect(effect);
 				}
 
-				foreach(DiscoveredEffectMethod discoveredEffectMethod in discoveredEffectMethods)
+				foreach (DiscoveredEffectMethod discoveredEffectMethod in discoveredEffectMethods)
 				{
 					IEffect effect = EffectWrapperFactory.Create(serviceProvider, discoveredEffectMethod);
 					store.AddEffect(effect);
