@@ -1,14 +1,12 @@
 ﻿using Blazor.Fluxor;
 using Blazor.Fluxor.Routing;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FullStackSample.Client.Store.ClientCreate
 {
 	public static class ClientCreateReducers
 	{
+		[ReducerMethod]
 		public static ClientCreateState GoReducer(ClientCreateState state, Go action)
 			{
 				string uri = new Uri(action.NewUri ?? "").AbsolutePath.ToLowerInvariant();
@@ -21,6 +19,7 @@ namespace FullStackSample.Client.Store.ClientCreate
 					validationErrors: null);
 			}
 
+		[ReducerMethod]
 		public static ClientCreateState ClientCreateCommandReducer(
 			ClientCreateState state,
 			Api.Requests.ClientCreateCommand action) =>
@@ -30,6 +29,7 @@ namespace FullStackSample.Client.Store.ClientCreate
 								errorMessage: null,
 								validationErrors: null);
 
+		[ReducerMethod]
 		public static ClientCreateState ClientCreateResponseReducer(
 			ClientCreateState state,
 			Api.Requests.ClientCreateResponse action) =>

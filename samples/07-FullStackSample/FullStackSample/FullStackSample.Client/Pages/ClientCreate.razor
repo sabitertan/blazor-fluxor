@@ -23,15 +23,15 @@
 	<PeterLeslieMorris.Blazor.Validation.Validate />
 	<div class="form-group">
 		<label for="Name">Name</label>
-		<InputText @bind-Value=FormData.Name Class="form-control" aria-describedby="Name" @attributes=GetElementDisabled() />
+		<InputText @bind-Value=FormData.Name Class="form-control" aria-describedby="Name" disabled=@(State.Value.IsExecutingApi) />
 		<ValidationMessage For=@(() => FormData.Name) />
 	</div>
 	<div class="form-group">
 		<label for="RegistrationNumber">Registration number</label>
-		<InputNumber @bind-Value=FormData.RegistrationNumber Class="form-control" aria-describedby="Registration number" @attributes=GetElementDisabled() />
+		<InputNumber @bind-Value=FormData.RegistrationNumber Class="form-control" aria-describedby="Registration number" disabled=@(State.Value.IsExecutingApi) />
 		<ValidationMessage For=@(() => FormData.RegistrationNumber) />
 	</div>
-	<button type="submit" class="btn btn-primary" @attributes=@GetElementDisabled()>
+	<button type="submit" class="btn btn-primary" disabled=@(State.Value.IsExecutingApi)>
 		@(State.Value.IsExecutingApi ? "Creating..." : "Create")
 	</button>
 </EditForm>
@@ -43,13 +43,6 @@
 	{
 		var command = new Api.Requests.ClientCreateCommand(FormData);
 		Dispatcher.Dispatch(command);
-	}
-
-	Dictionary<string, object> GetElementDisabled()
-	{
-		if (State.Value.IsExecutingApi)
-			return new Dictionary<string, object> { ["disabled"] = "disabled" };
-		return new Dictionary<string, object>();
 	}
 
 	protected override void OnInitialized()
