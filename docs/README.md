@@ -1,12 +1,14 @@
-# Blazor-Fluxor 
+# Blazor-Fluxor
 ![](./images/blazor-fluxor-logo.png)
 
-Blazor-Fluxor is a zero boilerplate Flux/Redux library for the new [Microsoft aspdotnet Blazor project]. 
+Blazor-Fluxor is a zero boilerplate Flux/Redux library for the new [Microsoft aspdotnet Blazor project].
 
 The aim of Fluxor is to create a single-state store approach to front-end development in Blazor without the headaches typically associated with other implementations, such as the overwhelming amount of boiler-plate code required just to add a very basic feature.
 
 ## Installation
 You can download the latest release / pre-release NuGet packages from the [official Blazor-Fluxor nuget page].
+
+ - [Blazor Fluxor] [![NuGet version (Blazor.Fluxor)](https://img.shields.io/nuget/v/Blazor.Fluxor.svg?style=flat-square)](https://www.nuget.org/packages/Blazor.Fluxor/)
 
 ## Getting started
 The easiest way to get started is to look at the [Sample projects]. They are numbered in an order recommended for learning Blazor-Fluxor. Each will have a `readme` file that explains how the sample was created.
@@ -35,10 +37,10 @@ More sample projects will be added as the framework develops.
 Issues fixed
 - https://github.com/mrpmorris/blazor-fluxor/issues/76
 
-### New in 0.32.0 
+### New in 0.32.0
 - Update to Blazor RC1
 
-### New in 0.31.0 
+### New in 0.31.0
 - Remove White=Positive / Black=Negative terms - Use Include/Exclude instead.
 - Update to Blazor preview 9
 
@@ -47,7 +49,7 @@ Issues fixed
 
 ### New in 0.29.0
 - Fixed a harmless null reference error when running server-side
-- Fixed FlightFinder sampl's UI and binding
+- Fixed FlightFinder sample's UI and binding
 - TypeExtensions.GetNamespace extension method removed in favor of Type.Namespace
 - Fixed bug that caused an error when the project contained an abstract class that implements a Fluxor interface
 
@@ -159,14 +161,14 @@ Issues fixed
 - Changed the signature of ServiceCollection.AddFluxor to pass in an Options object
 - Added support for Redux Dev Tools
 - Added support for adding custom Middleware
-  
+
 ### New in 0.0.4
 - Changed side-effects to return an array of actions to dispatch rather than limiting it to a single action
 
 ### New in 0.0.3
 - Added side-effects for calling out to async routines such as HTTP requests
 - Added a sample application to the [Sample projects]
-  
+
 ### New in 0.0.2
 - Automatic discovery of store, features, and reducers via dependency injection.
 
@@ -177,6 +179,7 @@ Issues fixed
 MIT
 
    [Official Blazor-Fluxor nuget page]: <https://www.nuget.org/packages/Blazor.Fluxor>
+   [Blazor Fluxor]: <https://www.nuget.org/packages/Blazor.Fluxor>
    [Microsoft aspdotnet blazor project]: <https://github.com/aspnet/Blazor>
    [Counter sample]: <https://github.com/mrpmorris/blazor-fluxor/tree/master/samples/01-CounterSample>
    [Effects sample]: <https://github.com/mrpmorris/blazor-fluxor/tree/master/samples/02-WeatherForecastSample>
@@ -184,3 +187,4 @@ MIT
    [Custom Middleware]: <https://github.com/mrpmorris/blazor-fluxor/tree/master/samples/04-MiddlewareSample>
    [Sample projects]: <https://github.com/mrpmorris/blazor-fluxor/tree/master/samples>
    [Blazor Flight Finder]: <https://github.com/mrpmorris/blazor-fluxor/tree/master/samples/05-FlightFinder>
+   [Full Stack Sample]: <https://github.com/mrpmorris/blazor-fluxor/tree/master/samples/06-FullStackSample>
