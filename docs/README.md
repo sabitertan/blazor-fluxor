@@ -21,8 +21,12 @@ More sample projects will be added as the framework develops.
 
 ## What's new
 
+### New in 0.35
+- Upgraded to DotNet Core 3
+
 ### New in 0.34
 - Work around for Blazor bug that stops injected scripts working in Safari.
+
 ### New in 0.33.1
 - Allow multiple reducers in a class (and static reducers) with `[ReducerMethod]`
 - Allow multiple effects in a class (and static effects) with `[EffectMethod]`
