@@ -7,7 +7,7 @@ namespace FullStackSample.Client.Store.ClientCreate
 	public static class ClientCreateReducers
 	{
 		[ReducerMethod]
-		public static ClientCreateState GoReducer(ClientCreateState state, Go action)
+		public static ClientCreateState ReduceGo(ClientCreateState state, Go action)
 			{
 				string uri = new Uri(action.NewUri ?? "").AbsolutePath.ToLowerInvariant();
 				if (uri.StartsWith("/clients/create"))
@@ -20,7 +20,7 @@ namespace FullStackSample.Client.Store.ClientCreate
 			}
 
 		[ReducerMethod]
-		public static ClientCreateState ClientCreateCommandReducer(
+		public static ClientCreateState ReduceClientCreateCommand(
 			ClientCreateState state,
 			Api.Requests.ClientCreateCommand action) =>
 				new ClientCreateState(
@@ -30,7 +30,7 @@ namespace FullStackSample.Client.Store.ClientCreate
 								validationErrors: null);
 
 		[ReducerMethod]
-		public static ClientCreateState ClientCreateResponseReducer(
+		public static ClientCreateState ReduceClientCreateResponse(
 			ClientCreateState state,
 			Api.Requests.ClientCreateResponse action) =>
 				new ClientCreateState(
