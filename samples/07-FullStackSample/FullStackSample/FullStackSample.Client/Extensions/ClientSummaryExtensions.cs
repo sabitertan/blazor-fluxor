@@ -10,7 +10,7 @@ namespace FullStackSample.Client.Extensions
 	{
 		public static ClientSummaryDto UpdateState(
 			this ClientSummaryDto clientSummary,
-			ClientStateNotification modifiedState)
+			ClientStateChanges modifiedState)
 		{
 			if (clientSummary.Id != modifiedState.Id)
 				return clientSummary;
@@ -27,7 +27,7 @@ namespace FullStackSample.Client.Extensions
 		//TODO: PeteM - Make modifiedState an IEnumerable
 		public static IEnumerable<ClientSummaryDto> UpdateState(
 			this IEnumerable<ClientSummaryDto> source,
-			ClientStateNotification modifiedState)
+			ClientStateChanges modifiedState)
 		{
 			if (source == null)
 				return null;

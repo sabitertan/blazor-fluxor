@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace FullStackSample.Client.Store.EntityStateEvents
 {
-	public class ClientStateNotificationsAction : StateNotificationsActionBase<ClientStateNotification, int>
+	public class ClientStatesChangedNotification : StatesChangedNotificationBase<ClientStateChanges, int>
 	{
-		public ClientStateNotificationsAction(ClientStateNotification notification)
+		public ClientStatesChangedNotification(ClientStateChanges notification)
 			: base(notification) { }
 
-		public ClientStateNotificationsAction(IEnumerable<ClientStateNotification> notifications)
+		public ClientStatesChangedNotification(IEnumerable<ClientStateChanges> notifications)
 			: base(notifications) { }
 
 		public IEnumerable<ClientSummaryDto> Update(IEnumerable<ClientSummaryDto> source) =>
@@ -18,10 +18,10 @@ namespace FullStackSample.Client.Store.EntityStateEvents
 				createSourceItemAndUpdate: CreateAndRemapClientSummaryDto,
 				updateSourceItem: UpdateSourceItem);
 
-		private ClientSummaryDto CreateAndRemapClientSummaryDto(ClientStateNotification notification) =>
+		private ClientSummaryDto CreateAndRemapClientSummaryDto(ClientStateChanges notification) =>
 			UpdateSourceItem(null, notification);
 
-		private ClientSummaryDto UpdateSourceItem(ClientSummaryDto state, ClientStateNotification notification) =>
+		private ClientSummaryDto UpdateSourceItem(ClientSummaryDto state, ClientStateChanges notification) =>
 			new ClientSummaryDto(
 				id: notification.Id,
 				name: notification.Name.GetUpdatedValue(state?.Name));

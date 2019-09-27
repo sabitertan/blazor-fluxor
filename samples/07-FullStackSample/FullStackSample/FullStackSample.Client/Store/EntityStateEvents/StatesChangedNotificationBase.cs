@@ -4,15 +4,15 @@ using System.Linq;
 
 namespace FullStackSample.Client.Store.EntityStateEvents
 {
-	public abstract class StateNotificationsActionBase<TNotification, TKey>
-		where TNotification : StateNotficationBase<TKey>
+	public abstract class StatesChangedNotificationBase<TStateChange, TKey>
+		where TStateChange : StateChangesBase<TKey>
 	{
-		public readonly IEnumerable<TNotification> Notifications;
+		public readonly IEnumerable<TStateChange> Notifications;
 
-		public StateNotificationsActionBase(TNotification notification)
-			: this(new TNotification[] { notification }) { }
+		public StatesChangedNotificationBase(TStateChange notification)
+			: this(new TStateChange[] { notification }) { }
 
-		public StateNotificationsActionBase(IEnumerable<TNotification> notifications)
+		public StatesChangedNotificationBase(IEnumerable<TStateChange> notifications)
 		{
 			Notifications = notifications ?? throw new ArgumentNullException(nameof(notifications));
 		}
@@ -20,8 +20,8 @@ namespace FullStackSample.Client.Store.EntityStateEvents
 		public IEnumerable<TSource> Update<TSource>(
 			IEnumerable<TSource> source,
 			Func<TSource, TKey> getSourceKey,
-			Func<TNotification, TSource> createSourceItemAndUpdate,
-			Func<TSource, TNotification, TSource> updateSourceItem)
+			Func<TStateChange, TSource> createSourceItemAndUpdate,
+			Func<TSource, TStateChange, TSource> updateSourceItem)
 		{
 			IEnumerable<TSource> result = ExcludeDeletedObjects(source, getSourceKey);
 			result = AddNewObjects(result, getSourceKey, createSourceItemAndUpdate);
@@ -49,7 +49,7 @@ namespace FullStackSample.Client.Store.EntityStateEvents
 		private IEnumerable<TSource> AddNewObjects<TSource>(
 			IEnumerable<TSource> source,
 			Func<TSource, TKey> getSourceKey,
-			Func<TNotification, TSource> createSourceItemAndUpdate)
+			Func<TStateChange, TSource> createSourceItemAndUpdate)
 		{
 			var sourceKeys = source.Select(getSourceKey);
 			// Get new object states
@@ -68,7 +68,7 @@ namespace FullStackSample.Client.Store.EntityStateEvents
 		private IEnumerable<TSource> UpdateModifiedObjects<TSource>(
 			IEnumerable<TSource> source,
 			Func<TSource, TKey> getSourceKey,
-			Func<TSource, TNotification, TSource> updateSourceItem)
+			Func<TSource, TStateChange, TSource> updateSourceItem)
 		{
 			// Get changed object states
 			var changedStates = Notifications
@@ -79,7 +79,7 @@ namespace FullStackSample.Client.Store.EntityStateEvents
 				return source;
 
 			var result = source.Select(s =>
-				changedStates.TryGetValue(getSourceKey(s), out TNotification notification)
+				changedStates.TryGetValue(getSourceKey(s), out TStateChange notification)
 				? updateSourceItem(s, notification)
 				: s);
 

@@ -39,7 +39,7 @@ namespace FullStackSample.Client.Store.ClientsSearch
 		[ReducerMethod]
 		public static ClientsSearchState ReduceClientsStateNotificationsAction(
 			ClientsSearchState state,
-			ClientStateNotificationsAction action) =>
+			ClientStatesChangedNotification action) =>
 				new ClientsSearchState(
 					isSearching: state.IsSearching,
 					errorMessage: state.ErrorMessage,

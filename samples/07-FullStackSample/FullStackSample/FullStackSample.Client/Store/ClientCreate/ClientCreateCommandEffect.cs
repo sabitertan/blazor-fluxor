@@ -27,12 +27,12 @@ namespace FullStackSample.Client.Store.ClientCreate
 				dispatcher.Dispatch(response);
 				if (response.Successful)
 				{
-					var notification = new ClientStateNotification(
+					var notification = new ClientStateChanges(
 						stateUpdateKind: StateUpdateKind.Exists,
 						id: response.ClientId,
 						name: response.Client.Name,
 						registrationNumber: response.Client.RegistrationNumber);
-					dispatcher.Dispatch(new ClientStateNotificationsAction(notification));
+					dispatcher.Dispatch(new ClientStatesChangedNotification(notification));
 					dispatcher.Dispatch(new Go("/clients/search/"));
 				}
 			}

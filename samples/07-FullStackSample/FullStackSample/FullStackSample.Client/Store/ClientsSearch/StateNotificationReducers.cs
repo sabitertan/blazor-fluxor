@@ -10,7 +10,7 @@ namespace FullStackSample.Client.Store.ClientsSearch
 		[ReducerMethod]
 		public static ClientsSearchState ClientStateNotificationReducer(
 			ClientsSearchState state,
-			ClientStateNotification action)
+			ClientStateChanges action)
 		{
 			var clients = state.Clients.UpdateState(action);
 			if (state.Name != null)
