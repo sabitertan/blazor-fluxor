@@ -27,7 +27,12 @@ namespace FullStackSample.Client.Store.ClientCreate
 				dispatcher.Dispatch(response);
 				if (response.Successful)
 				{
-					NotifyStateChanged(dispatcher, response.Client);
+					var notification = new ClientStateNotification(
+						stateUpdateKind: StateUpdateKind.Exists,
+						id: response.ClientId,
+						name: response.Client.Name,
+						registrationNumber: response.Client.RegistrationNumber);
+					dispatcher.Dispatch(new ClientStateNotificationsAction(notification));
 					dispatcher.Dispatch(new Go("/clients/search/"));
 				}
 			}
@@ -36,15 +41,6 @@ namespace FullStackSample.Client.Store.ClientCreate
 				dispatcher.Dispatch(new Api.Requests.ClientCreateResponse());
 				dispatcher.Dispatch(new NotifyUnexpectedServerErrorStatusChanged(true));
 			}
-		}
-
-		private void NotifyStateChanged(IDispatcher dispatcher, ClientCreateDto client)
-		{
-			var clientStateChangeNotification = new ClientStateNotification(
-				stateUpdateKind: StateUpdateKind.Created,
-				id: client.Id,
-				name: client.Name);
-			dispatcher.Dispatch(clientStateChangeNotification);
 		}
 	}
 }

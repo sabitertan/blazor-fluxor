@@ -14,14 +14,14 @@ namespace FullStackSample.Client.Extensions
 		{
 			if (clientSummary.Id != modifiedState.Id)
 				return clientSummary;
-			if (modifiedState.StateUpdateKind == StateUpdateKind.Created)
+			if (modifiedState.StateUpdateKind == StateUpdateKind.Exists)
 				return clientSummary;
 			if (modifiedState.StateUpdateKind == StateUpdateKind.Deleted)
 				return null;
 
 			return new ClientSummaryDto(
 				id: clientSummary.Id,
-				name: modifiedState.Name.UpdatedValue(clientSummary.Name));
+				name: modifiedState.Name.GetUpdatedValue(clientSummary.Name));
 		}
 
 		//TODO: PeteM - Make modifiedState an IEnumerable
@@ -34,7 +34,7 @@ namespace FullStackSample.Client.Extensions
 
 			switch (modifiedState.StateUpdateKind)
 			{
-				case StateUpdateKind.Created:
+				case StateUpdateKind.Exists:
 					source = source.Append(new ClientSummaryDto(
 						id: modifiedState.Id,
 						name: modifiedState.Name.GetValueOrDefault()));

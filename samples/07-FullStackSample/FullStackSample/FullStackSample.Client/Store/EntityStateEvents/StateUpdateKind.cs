@@ -2,7 +2,7 @@
 {
 	public enum StateUpdateKind
 	{
-		Created,
+		Exists,
 		Modified,
 		Deleted
 	}

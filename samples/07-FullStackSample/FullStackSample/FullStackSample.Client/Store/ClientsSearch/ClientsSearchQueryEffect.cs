@@ -23,14 +23,13 @@ namespace FullStackSample.Client.Store.ClientsSearch
 				var response = await ApiService.Execute<Api.Requests.ClientsSearchQuery, Api.Requests.ClientsSearchResponse>(query);
 				dispatcher.Dispatch(response);
 
-				response.Clients.ToList().ForEach(x => dispatcher.Dispatch(
+				var notifications = response.Clients.Select(x =>
 					new ClientStateNotification(
-						stateUpdateKind: StateUpdateKind.Modified,
+						stateUpdateKind: StateUpdateKind.Exists,
 						id: x.Id,
-						name: x.Name)
-					)
-				);
-
+						name: x.Name,
+						registrationNumber: PropertyUpdate<int>.NotSet));
+				dispatcher.Dispatch(new ClientStateNotificationsAction(notifications));
 			}
 			catch
 			{
