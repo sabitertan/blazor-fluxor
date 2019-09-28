@@ -25,13 +25,16 @@ namespace FullStackSample.Client.Store.ClientCreate
 					await ApiService.Execute<Api.Requests.ClientCreateCommand, Api.Requests.ClientCreateResponse>(action);
 
 				dispatcher.Dispatch(response);
+
 				if (response.Successful)
 				{
 					var notification = new ClientStateChanges(
-						stateUpdateKind: StateUpdateKind.Exists,
-						id: response.ClientId,
-						name: response.Client.Name,
-						registrationNumber: response.Client.RegistrationNumber);
+						clientId: response.ClientId,
+						stateUpdateKind: StateUpdateKind.Exists)
+					{
+						Name = response.Client.Name,
+						RegistrationNumber = response.Client.RegistrationNumber
+					};
 					dispatcher.Dispatch(new ClientStatesChangedNotification(notification));
 					dispatcher.Dispatch(new Go("/clients/search/"));
 				}

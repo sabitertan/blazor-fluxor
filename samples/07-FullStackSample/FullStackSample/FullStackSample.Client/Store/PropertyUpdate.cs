@@ -1,25 +1,28 @@
 ﻿namespace FullStackSample.Client.Store
 {
-	public class PropertyUpdate<T>
+	public sealed class PropertyUpdate<T>
 	{
 		public readonly bool Updated;
-		private readonly T Value;
+		internal readonly T Value;
 
 		public static implicit operator PropertyUpdate<T>(T value) => new PropertyUpdate<T>(value);
-		public T GetValueOrDefault() => Updated ? Value : default(T);
-		public T GetUpdatedValue(T originalValue) => Updated ? Value : originalValue;
 
-		private PropertyUpdate() { }
-
-		public PropertyUpdate(T value)
+		private PropertyUpdate(T value)
 		{
 			Updated = true;
 			Value = value;
 		}
 
-		public static PropertyUpdate<T> NotSet => new PropertyUpdate<T>();
-
 		public override string ToString() =>
 			Updated ? null : Value?.ToString();
+	}
+
+	public static class PropertyUpdateExtensions
+	{
+		public static T GetValueOrDefault<T>(this PropertyUpdate<T> update) =>
+			update.GetUpdatedValue(default(T));
+
+		public static T GetUpdatedValue<T>(this PropertyUpdate<T> update, T originalValue) =>
+			(update != null && update.Updated) ? update.Value : originalValue;
 	}
 }

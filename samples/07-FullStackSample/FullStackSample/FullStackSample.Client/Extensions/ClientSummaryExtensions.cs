@@ -1,4 +1,5 @@
 ﻿using FullStackSample.Api.Models;
+using FullStackSample.Client.Store;
 using FullStackSample.Client.Store.EntityStateEvents;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,6 @@ namespace FullStackSample.Client.Extensions
 				name: modifiedState.Name.GetUpdatedValue(clientSummary.Name));
 		}
 
-		//TODO: PeteM - Make modifiedState an IEnumerable
 		public static IEnumerable<ClientSummaryDto> UpdateState(
 			this IEnumerable<ClientSummaryDto> source,
 			ClientStateChanges modifiedState)

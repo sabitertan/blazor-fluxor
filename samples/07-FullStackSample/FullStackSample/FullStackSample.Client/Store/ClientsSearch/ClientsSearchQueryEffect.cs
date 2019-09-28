@@ -25,10 +25,11 @@ namespace FullStackSample.Client.Store.ClientsSearch
 
 				var notifications = response.Clients.Select(x =>
 					new ClientStateChanges(
-						stateUpdateKind: StateUpdateKind.Exists,
-						id: x.Id,
-						name: x.Name,
-						registrationNumber: PropertyUpdate<int>.NotSet));
+						clientId: x.Id,
+						stateUpdateKind: StateUpdateKind.Exists)
+					{
+						Name = x.Name
+					});
 				dispatcher.Dispatch(new ClientStatesChangedNotification(notifications));
 			}
 			catch

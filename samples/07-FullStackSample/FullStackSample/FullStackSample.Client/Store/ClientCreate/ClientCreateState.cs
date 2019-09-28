@@ -1,6 +1,5 @@
 ﻿using FullStackSample.Api.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace FullStackSample.Client.Store.ClientCreate

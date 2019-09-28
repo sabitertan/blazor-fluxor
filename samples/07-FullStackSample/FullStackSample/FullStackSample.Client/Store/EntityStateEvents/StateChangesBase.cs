@@ -2,15 +2,13 @@
 {
 	public abstract class StateChangesBase<TKey>
 	{
-		public TKey Id { get; set; }
-		public StateUpdateKind StateUpdateKind { get; set;  }
+		public TKey Id { get; }
+		public StateUpdateKind StateUpdateKind { get; }
 
-		protected StateChangesBase() { }
-
-		protected StateChangesBase(StateUpdateKind stateUpdateKind, TKey id)
+		public StateChangesBase(TKey id, StateUpdateKind stateUpdateKind)
 		{
-			StateUpdateKind = stateUpdateKind;
 			Id = id;
+			StateUpdateKind = stateUpdateKind;
 		}
 	}
 }
