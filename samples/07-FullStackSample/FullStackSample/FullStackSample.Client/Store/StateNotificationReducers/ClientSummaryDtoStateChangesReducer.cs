@@ -6,20 +6,16 @@ namespace FullStackSample.Client.Store.StateNotificationReducers
 {
 	public static class ClientSummaryDtoStateChangesReducer
 	{
-		public static IEnumerable<ClientSummaryDto> Update(
+		public static IEnumerable<ClientSummaryDto> ReduceCollection(
 			IEnumerable<ClientSummaryDto> source,
 			IEnumerable<ClientStateChanges> stateChanges) =>
-			CollectionReducer.Update(
+			StateCollectionReducer.ReduceCollection(
 				stateChanges: stateChanges,
 				source: source,
 				getSourceKey: x => x.Id,
-				createSourceItemAndUpdate: CreateAndRemapClientSummaryDto,
-				updateSourceItem: UpdateSourceItem);
+				reduce: ReduceObject);
 
-		private static ClientSummaryDto CreateAndRemapClientSummaryDto(ClientStateChanges notification) =>
-			UpdateSourceItem(null, notification);
-
-		private static ClientSummaryDto UpdateSourceItem(ClientSummaryDto state, ClientStateChanges notification) =>
+		private static ClientSummaryDto ReduceObject(ClientSummaryDto state, ClientStateChanges notification) =>
 			new ClientSummaryDto(
 				id: notification.Id,
 				name: notification.Name.GetUpdatedValue(state?.Name));

@@ -5,19 +5,18 @@ using System.Linq;
 
 namespace FullStackSample.Client.Store.StateNotificationReducers
 {
-	internal static class CollectionReducer
+	internal static class StateCollectionReducer
 	{
-		internal static IEnumerable<TSource> Update<TSource, TKey, TObjectStateChanges>(
+		internal static IEnumerable<TSource> ReduceCollection<TSource, TKey, TObjectStateChanges>(
 			IEnumerable<TObjectStateChanges> stateChanges,
 			IEnumerable<TSource> source,
 			Func<TSource, TKey> getSourceKey,
-			Func<TObjectStateChanges, TSource> createSourceItemAndUpdate,
-			Func<TSource, TObjectStateChanges, TSource> updateSourceItem)
+			Func<TSource, TObjectStateChanges, TSource> reduce)
 			where TObjectStateChanges : ObjectStateChangesBase<TKey>
 		{
 			IEnumerable<TSource> result = ExcludeDeletedObjects(stateChanges, source, getSourceKey);
-			result = AddNewObjects(stateChanges, result, getSourceKey, createSourceItemAndUpdate);
-			result = UpdateModifiedObjects(stateChanges, result, getSourceKey, updateSourceItem);
+			result = AddNewObjects(stateChanges, result, getSourceKey, reduce);
+			result = UpdateModifiedObjects(stateChanges, result, getSourceKey, reduce);
 			return result;
 		}
 
@@ -44,7 +43,7 @@ namespace FullStackSample.Client.Store.StateNotificationReducers
 			IEnumerable<TObjectStateChanges> stateChanges,
 			IEnumerable<TSource> source,
 			Func<TSource, TKey> getSourceKey,
-			Func<TObjectStateChanges, TSource> createSourceItemAndUpdate)
+			Func<TSource, TObjectStateChanges, TSource> reduce)
 			where TObjectStateChanges : ObjectStateChangesBase<TKey>
 		{
 			var sourceKeys = source.Select(getSourceKey);
@@ -56,7 +55,8 @@ namespace FullStackSample.Client.Store.StateNotificationReducers
 			if (!newObjectStates.Any())
 				return source;
 
-			var newInstances = newObjectStates.Select(createSourceItemAndUpdate);
+			TSource defaultSourceState = default(TSource);
+			var newInstances = newObjectStates.Select(x => reduce(defaultSourceState, x));
 			return source.Union(newInstances);
 		}
 

@@ -45,6 +45,6 @@ namespace FullStackSample.Client.Store.ClientsSearch
 					isSearching: state.IsSearching,
 					errorMessage: state.ErrorMessage,
 					name: state.Name,
-					clients: ClientSummaryDtoStateChangesReducer.Update(state.Clients, action.Notifications));
+					clients: ClientSummaryDtoStateChangesReducer.ReduceCollection(state.Clients, action.Notifications));
 	}
 }
