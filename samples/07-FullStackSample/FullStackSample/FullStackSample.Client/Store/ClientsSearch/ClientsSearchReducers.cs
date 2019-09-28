@@ -1,6 +1,7 @@
 ﻿using Blazor.Fluxor;
 using Blazor.Fluxor.Routing;
 using FullStackSample.Client.Store.EntityStateEvents;
+using FullStackSample.Client.Store.StateNotificationReducers;
 using System;
 
 namespace FullStackSample.Client.Store.ClientsSearch
@@ -39,11 +40,11 @@ namespace FullStackSample.Client.Store.ClientsSearch
 		[ReducerMethod]
 		public static ClientsSearchState ReduceClientsStateNotificationsAction(
 			ClientsSearchState state,
-			ClientStatesChangedNotification action) =>
+			StatesChangedNotification<ClientStateChanges, int> action) =>
 				new ClientsSearchState(
 					isSearching: state.IsSearching,
 					errorMessage: state.ErrorMessage,
 					name: state.Name,
-					clients: action.Update(state.Clients));
+					clients: ClientSummaryDtoStateChangesReducer.Update(state.Clients, action.Notifications));
 	}
 }

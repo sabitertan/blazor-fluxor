@@ -35,7 +35,7 @@ namespace FullStackSample.Client.Store.ClientCreate
 						Name = response.Client.Name,
 						RegistrationNumber = response.Client.RegistrationNumber
 					};
-					dispatcher.Dispatch(new ClientStatesChangedNotification(notification));
+					dispatcher.Dispatch(new StatesChangedNotification<ClientStateChanges, int>(notification));
 					dispatcher.Dispatch(new Go("/clients/search/"));
 				}
 			}

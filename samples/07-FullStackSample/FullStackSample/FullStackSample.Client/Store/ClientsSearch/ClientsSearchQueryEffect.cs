@@ -30,7 +30,7 @@ namespace FullStackSample.Client.Store.ClientsSearch
 					{
 						Name = x.Name
 					});
-				dispatcher.Dispatch(new ClientStatesChangedNotification(notifications));
+				dispatcher.Dispatch(new StatesChangedNotification<ClientStateChanges, int>(notifications));
 			}
 			catch
 			{

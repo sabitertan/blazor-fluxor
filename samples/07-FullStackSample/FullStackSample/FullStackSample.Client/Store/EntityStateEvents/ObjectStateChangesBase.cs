@@ -1,11 +1,11 @@
 ﻿namespace FullStackSample.Client.Store.EntityStateEvents
 {
-	public abstract class StateChangesBase<TKey>
+	public abstract class ObjectStateChangesBase<TKey>
 	{
 		public TKey Id { get; }
 		public StateUpdateKind StateUpdateKind { get; }
 
-		public StateChangesBase(TKey id, StateUpdateKind stateUpdateKind)
+		public ObjectStateChangesBase(TKey id, StateUpdateKind stateUpdateKind)
 		{
 			Id = id;
 			StateUpdateKind = stateUpdateKind;

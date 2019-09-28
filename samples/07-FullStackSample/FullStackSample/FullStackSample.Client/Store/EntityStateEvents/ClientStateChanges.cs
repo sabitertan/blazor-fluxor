@@ -1,6 +1,6 @@
 ﻿namespace FullStackSample.Client.Store.EntityStateEvents
 {
-	public class ClientStateChanges : StateChangesBase<int>
+	public class ClientStateChanges : ObjectStateChangesBase<int>
 	{
 		public PropertyUpdate<string> Name { get; set; }
 		public PropertyUpdate<int> RegistrationNumber { get; set; }
