@@ -7,9 +7,9 @@ This sample shows how to take the standard Visual Studio Blazor template and Flu
 3. Add the Blazor-Fluxor nuget package to your Client project.
  
 ### Initializing the store
-Fluxor has the ability to write your own middleware libraries or use existing 3rd party libraries. As these libraries may require Javascript inserted into the hosting html you must first call `@Store.Initialize()` in your main layout page.
-1. In the Client project open the file `Shared\MainLayout.razor`
-2. Beneath the `@inherits LayoutComponentBase` line add `@inject Blazor.Fluxor.IStore Store`
+Fluxor has the ability to write your own middleware libraries or use existing 3rd party libraries. As these libraries may require Javascript inserted into the hosting html you must first call `@Store.Initialize()` in your app component.
+1. In the Client project open the file `App.razor`
+2. At the top of the file add `@inject Blazor.Fluxor.IStore Store`
 3. Then add `@Store.Initialize()` - This will initialize the store and inject any required Javascript
 
 ### Automatic discovery of store features
