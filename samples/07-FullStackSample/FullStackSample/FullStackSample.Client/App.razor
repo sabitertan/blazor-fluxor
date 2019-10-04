@@ -1,4 +1,6 @@
-﻿<Router AppAssembly="typeof(Program).Assembly">
+﻿@inject Blazor.Fluxor.IStore Store
+@Store.Initialize()
+<Router AppAssembly="typeof(Program).Assembly">
 	<Found Context="routeData">
 		<RouteView RouteData="routeData" />
 	</Found>

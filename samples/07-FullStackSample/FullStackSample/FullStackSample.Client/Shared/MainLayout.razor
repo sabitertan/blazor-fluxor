@@ -1,8 +1,6 @@
 ﻿@inherits Blazor.Fluxor.Components.FluxorLayout
 @inject IDispatcher Dispatcher
-@inject Blazor.Fluxor.IStore Store
 @inject IState<FullStackSample.Client.Store.Main.MainState> MainState
-@Store.Initialize()
 
 <div class="sidebar">
 	<NavMenu />
