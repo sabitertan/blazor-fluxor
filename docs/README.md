@@ -23,6 +23,9 @@ More sample projects will be added as the framework develops.
 
 ## What's new
 
+### New in 0.36
+- Initialise store in App.razor instead of MainLayout.razor
+
 ### New in 0.35
 - Upgraded to DotNet Core 3
 
