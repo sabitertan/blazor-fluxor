@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Blazor.Fluxor.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 
 namespace Blazor.Fluxor
 {
@@ -18,7 +21,7 @@ namespace Blazor.Fluxor
 		/// <see cref="IStore.Initialized"/>
 		public Task Initialized => InitializedCompletionSource.Task;
 
-		private IBrowserInteropService BrowserInteropService;
+		private IStoreInitializer StoreInitializer;
 		private readonly Dictionary<string, IFeature> FeaturesByName = new Dictionary<string, IFeature>(StringComparer.InvariantCultureIgnoreCase);
 		private readonly List<IEffect> Effects = new List<IEffect>();
 		private readonly List<IMiddleware> Middlewares = new List<IMiddleware>();
@@ -34,17 +37,17 @@ namespace Blazor.Fluxor
 		/// <summary>
 		/// Creates an instance of the store
 		/// </summary>
-		/// <param name="browserInteropService">The BrowserInteropService the Browser will use to initialise the store</param>
-		public Store(IBrowserInteropService browserInteropService)
+		/// <param name="storeInitializer">The strategy used to initialise the store</param>
+		public Store(IStoreInitializer storeInitializer)
 		{
+			StoreInitializer = storeInitializer;
+
 			MethodInfo dispatchNotifictionFromStoreMethodInfo =
 				typeof(IFeature)
 				.GetMethod(nameof(IFeature.ReceiveDispatchNotificationFromStore));
 			IFeatureReceiveDispatchNotificationFromStore = (Action<IFeature, object>)
 				Delegate.CreateDelegate(typeof(Action<IFeature, object>), dispatchNotifictionFromStoreMethodInfo);
 
-			BrowserInteropService = browserInteropService;
-			BrowserInteropService.PageLoaded += OnPageLoaded;
 			Dispatch(new StoreInitializedAction());
 		}
 
@@ -131,28 +134,27 @@ namespace Blazor.Fluxor
 		/// <see cref="IStore.Initialize"/>
 		public RenderFragment Initialize()
 		{
+			if (HasActivatedStore)
+				return builder => { };
+
+			StoreInitializer.Initialize(ActivateStore);
 			return (RenderTreeBuilder renderer) =>
 			{
-				var script = new StringBuilder();
-				script.AppendLine("if (window.DotNet) {");
+				var scriptBuilder = new StringBuilder();
+				foreach (IMiddleware middleware in Middlewares)
 				{
-					foreach (IMiddleware middleware in Middlewares)
+					string middlewareScript = middleware.GetClientScripts();
+					if (middlewareScript != null)
 					{
-						string middlewareScript = middleware.GetClientScripts();
-						if (middlewareScript != null)
-						{
-							script.AppendLine($"// Middleware scripts: {middleware.GetType().FullName}");
-							script.AppendLine($"{middlewareScript}");
-						}
+						scriptBuilder.AppendLine($"// Middleware scripts: {middleware.GetType().FullName}");
+						scriptBuilder.AppendLine($"{middlewareScript}");
 					}
-					script.AppendLine("//Fluxor");
-					script.AppendLine(GetClientScripts());
 				}
-				script.AppendLine("}");
 
+				string script = scriptBuilder.ToString();
 				renderer.OpenElement(1, "script");
 				renderer.AddAttribute(2, "id", "InitializeFluxor");
-				renderer.AddMarkupContent(3, script.ToString());
+				renderer.AddMarkupContent(3, script);
 				renderer.CloseElement();
 			};
 		}
@@ -215,17 +217,6 @@ namespace Blazor.Fluxor
 				// Now remove the processed action from the queue so we can move on to the next (if any)
 				QueuedActions.Dequeue();
 			}
-		}
-
-		private string GetClientScripts()
-		{
-			return BrowserInteropService.GetClientScripts();
-		}
-
-		private void OnPageLoaded(object sender, EventArgs e)
-		{
-			BrowserInteropService.PageLoaded -= OnPageLoaded;
-			ActivateStore();
 		}
 	}
 }

@@ -1,5 +1,4 @@
 ﻿using Blazor.Fluxor.DependencyInjection;
-using Blazor.Fluxor.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -31,9 +30,6 @@ namespace Blazor.Fluxor
 			if (configure == null)
 				throw new ArgumentNullException(nameof(configure));
 
-			// Add the browser interop service
-			serviceCollection.AddScoped<IBrowserInteropService, BrowserInteropPassthrough>();
-
 			// We only use an instance so middleware can create extensions to the Options
 			var options = new Options();
 			configure(options);
@@ -48,6 +44,7 @@ namespace Blazor.Fluxor
 			// Scan for features and effects
 			if (Options.DependencyInjectionEnabled)
 			{
+				serviceCollection.AddScoped<IStoreInitializer, JavaScriptStoreInitializer>();
 				serviceCollection.AddScoped<ReduxDevTools.ReduxDevToolsInterop>();
 				DependencyScanner.Scan(
 					serviceCollection: serviceCollection,

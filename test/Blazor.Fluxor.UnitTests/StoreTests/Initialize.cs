@@ -6,34 +6,41 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 {
 	public partial class StoreTests
 	{
-		public class OnPageLoaded
+		public class Initialize
 		{
+			TestStoreInitializer StoreInitializer;
+
 			[Fact]
-			public void ActivatesMiddleware_WhenPageLoads()
+			public void ActivatesMiddleware_WhenStoreInitializerCompletes()
 			{
-				var browserInteropStub = new BrowserInteropStub();
-				var subject = new Store(browserInteropStub);
+				var subject = new Store(StoreInitializer);
+				subject.Initialize();
 				var mockMiddleware = new Mock<IMiddleware>();
 				subject.AddMiddleware(mockMiddleware.Object);
 
-				browserInteropStub._TriggerPageLoaded();
+				StoreInitializer.Complete();
 
 				mockMiddleware
 					.Verify(x => x.Initialize(subject));
 			}
 
 			[Fact]
-			public void CallsAfterInitializeAllMiddlewares_WhenPageLoads()
+			public void CallsAfterInitializeAllMiddlewares_WhenStoreInitializerCompletes()
 			{
-				var browserInteropStub = new BrowserInteropStub();
-				var subject = new Store(browserInteropStub);
+				var subject = new Store(StoreInitializer);
+				subject.Initialize();
 				var mockMiddleware = new Mock<IMiddleware>();
 				subject.AddMiddleware(mockMiddleware.Object);
 
-				browserInteropStub._TriggerPageLoaded();
+				StoreInitializer.Complete();
 
 				mockMiddleware
 					.Verify(x => x.AfterInitializeAllMiddlewares());
+			}
+
+			public Initialize()
+			{
+				StoreInitializer = new TestStoreInitializer();
 			}
 		}
 	}

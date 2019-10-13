@@ -12,6 +12,14 @@ Fluxor has the ability to write your own middleware libraries or use existing 3r
 2. At the top of the file add `@inject Blazor.Fluxor.IStore Store`
 3. Then add `@Store.Initialize()` - This will initialize the store and inject any required Javascript
 
+NOTE: If you are creating a server-side app you will need to edit the host cshtml file (usually /Pages/\_Host.cshtml)
+and above `blazor.server.js` add a reference to the Blazor JavaScript code, like so...
+
+```
+<script src="_content/Blazor.Fluxor/index.js"></script>
+<script src="_framework/blazor.server.js"></script>
+```
+
 ### Automatic discovery of store features
 1. In the Client project find the `Startup.cs` file. 
 2. Add `using Blazor.Fluxor;`
