@@ -69,8 +69,8 @@ namespace Blazor.Fluxor.DependencyInjection
 			// Register a custom factory for building IStore that will inject all effects
 			serviceCollection.AddScoped(typeof(IStore), serviceProvider =>
 			{
-				var storeInitializer = serviceProvider.GetService<IStoreInitializer>();
-				var store = new Store(storeInitializer);
+				var storeInitializationStrategy = serviceProvider.GetService<IStoreInitializationStrategy>();
+				var store = new Store(storeInitializationStrategy);
 				foreach (DiscoveredFeatureClass discoveredFeatureClass in discoveredFeatureClasses)
 				{
 					var feature = (IFeature)serviceProvider.GetService(discoveredFeatureClass.FeatureInterfaceGenericType);

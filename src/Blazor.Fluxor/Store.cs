@@ -21,7 +21,7 @@ namespace Blazor.Fluxor
 		/// <see cref="IStore.Initialized"/>
 		public Task Initialized => InitializedCompletionSource.Task;
 
-		private IStoreInitializer StoreInitializer;
+		private IStoreInitializationStrategy StoreInitializationStrategy;
 		private readonly Dictionary<string, IFeature> FeaturesByName = new Dictionary<string, IFeature>(StringComparer.InvariantCultureIgnoreCase);
 		private readonly List<IEffect> Effects = new List<IEffect>();
 		private readonly List<IMiddleware> Middlewares = new List<IMiddleware>();
@@ -37,10 +37,10 @@ namespace Blazor.Fluxor
 		/// <summary>
 		/// Creates an instance of the store
 		/// </summary>
-		/// <param name="storeInitializer">The strategy used to initialise the store</param>
-		public Store(IStoreInitializer storeInitializer)
+		/// <param name="storeInitializationStrategy">The strategy used to initialise the store</param>
+		public Store(IStoreInitializationStrategy storeInitializationStrategy)
 		{
-			StoreInitializer = storeInitializer;
+			StoreInitializationStrategy = storeInitializationStrategy;
 
 			MethodInfo dispatchNotifictionFromStoreMethodInfo =
 				typeof(IFeature)
@@ -137,7 +137,7 @@ namespace Blazor.Fluxor
 			if (HasActivatedStore)
 				return builder => { };
 
-			StoreInitializer.Initialize(ActivateStore);
+			StoreInitializationStrategy.Initialize(ActivateStore);
 			return (RenderTreeBuilder renderer) =>
 			{
 				var scriptBuilder = new StringBuilder();

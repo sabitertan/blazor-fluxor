@@ -2,7 +2,7 @@
 
 namespace Blazor.Fluxor.UnitTests.SupportFiles
 {
-	public class TestStoreInitializer : IStoreInitializer
+	public class TestStoreInitializer : IStoreInitializationStrategy
 	{
 		Action Completed;
 

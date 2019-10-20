@@ -7,7 +7,7 @@ namespace Blazor.Fluxor
 	/// called.
 	/// </summary>
 	/// <seealso cref="IStore.BeginInternalMiddlewareChange()"/>
-	public class DisposableCallback : IDisposable
+	public sealed class DisposableCallback : IDisposable
 	{
 		private readonly Action Action;
 		private bool IsDisposed;
@@ -40,7 +40,8 @@ namespace Blazor.Fluxor
 		/// <exception cref="InvalidOperationException">Thrown if the object is collected without being disposed</exception>
 		~DisposableCallback()
 		{
-			throw new InvalidOperationException("DisposableCallback was not disposed");
+			if (!IsDisposed)
+				throw new InvalidOperationException("DisposableCallback was not disposed");
 		}
 	}
 }

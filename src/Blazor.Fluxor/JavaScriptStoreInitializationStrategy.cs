@@ -1,5 +1,4 @@
 ﻿using Blazor.Fluxor.Exceptions;
-using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
 using System;
 using System.Threading;
@@ -7,15 +6,24 @@ using System.Threading.Tasks;
 
 namespace Blazor.Fluxor
 {
-	public class JavaScriptStoreInitializer : IStoreInitializer
+	/// <summary>
+	/// An <see cref="IStoreInitializationStrategy"/> strategy that initialises the store using JavaScript
+	/// once the page has completedly loaded in the browser
+	/// </summary>
+	public class JavaScriptStoreInitializationStrategy : IStoreInitializationStrategy
 	{
-		public readonly IJSRuntime JSRuntime;
+		private readonly IJSRuntime JSRuntime;
 
-		public JavaScriptStoreInitializer(IJSRuntime jSRuntime)
+		/// <summary>
+		/// Creates a new instance of the store initialiser strategy
+		/// </summary>
+		/// <param name="jSRuntime">The JS Runtime</param>
+		public JavaScriptStoreInitializationStrategy(IJSRuntime jSRuntime)
 		{
 			JSRuntime = jSRuntime;
 		}
 
+		/// See <see cref="IStoreInitializationStrategy.Initialize(Action)"/>
 		public void Initialize(Action completed) =>
 			new Timer(async state =>
 			{
