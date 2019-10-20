@@ -46,13 +46,7 @@ namespace Blazor.Fluxor.DependencyInjection
 				return this;
 
 			Assembly assembly = typeof(TMiddleware).Assembly;
-			//TODO: PeteM - GetNameSpace?
-			string @namespace = string.Join(".", typeof(TMiddleware)
-				.FullName
-				.Split('.')
-				.Reverse()
-				.Skip(1)
-				.Reverse());
+			string @namespace = typeof(TMiddleware).Namespace;
 
 			DependencyInjectionAssembliesToScan = new List<AssemblyScanSettings>(DependencyInjectionAssembliesToScan)
 			{
