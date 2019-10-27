@@ -141,19 +141,24 @@ namespace Blazor.Fluxor
 			return (RenderTreeBuilder renderer) =>
 			{
 				var scriptBuilder = new StringBuilder();
-				foreach (IMiddleware middleware in Middlewares)
+				scriptBuilder.AppendLine("if (!window.fluxorInitialized) {");
 				{
-					string middlewareScript = middleware.GetClientScripts();
-					if (middlewareScript != null)
+					scriptBuilder.AppendLine("window.fluxorInitialized = true;");
+					foreach (IMiddleware middleware in Middlewares)
 					{
-						scriptBuilder.AppendLine($"// Middleware scripts: {middleware.GetType().FullName}");
-						scriptBuilder.AppendLine($"{middlewareScript}");
+						string middlewareScript = middleware.GetClientScripts();
+						if (middlewareScript != null)
+						{
+							scriptBuilder.AppendLine($"// Middleware scripts: {middleware.GetType().FullName}");
+							scriptBuilder.AppendLine($"{middlewareScript}");
+						}
 					}
 				}
+				scriptBuilder.AppendLine("}");
 
 				string script = scriptBuilder.ToString();
 				renderer.OpenElement(1, "script");
-				renderer.AddAttribute(2, "id", "InitializeFluxor");
+				renderer.AddAttribute(2, "id", "initializeFluxor");
 				renderer.AddMarkupContent(3, script);
 				renderer.CloseElement();
 			};

@@ -1,5 +1,5 @@
-﻿var TryInitializeFluxor = function () {
-	var initializeFluxorScriptElement = document.getElementById("InitializeFluxor");
+﻿var tryInitializeFluxor = function () {
+	var initializeFluxorScriptElement = document.getElementById("initializeFluxor");
 	if (initializeFluxorScriptElement) {
 		let script = initializeFluxorScriptElement.innerHTML || "";
 		script = script.replace("<!--!-->", "");
