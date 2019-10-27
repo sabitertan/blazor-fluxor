@@ -53,7 +53,7 @@ namespace Blazor.Fluxor
 			ComponentBaseInvokeAsync = (Func<ComponentBase, Action, Task>)
 				Delegate.CreateDelegate(typeof(Func<ComponentBase, Action, Task>), invokeAsyncMethodInfo);
 
-			MethodInfo stateHasChangedMethodInfo = 
+			MethodInfo stateHasChangedMethodInfo =
 				typeof(ComponentBase).GetMethod(
 					name: "StateHasChanged",
 					bindingAttr: BindingFlags.NonPublic | BindingFlags.Instance);
@@ -109,6 +109,14 @@ namespace Blazor.Fluxor
 		{
 			var subscriberReference = new WeakReference<ComponentBase>(subscriber);
 			ObservingComponents.Add(subscriberReference);
+		}
+
+		/// <see cref="IFeature.Unsubscribe(ComponentBase)"/>
+		public void Unsubscribe(ComponentBase subscriber)
+		{
+			var subscriberReference = ObservingComponents.FirstOrDefault(wr => wr.TryGetTarget(out var target) && ReferenceEquals(target, subscriber));
+			if (subscriberReference != null)
+				ObservingComponents.Remove(subscriberReference);
 		}
 
 		private void TriggerStateChangedCallbacks(TState newState)
