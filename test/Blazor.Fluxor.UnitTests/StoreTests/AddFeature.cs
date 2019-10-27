@@ -18,7 +18,7 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 					.Setup(x => x.GetName())
 					.Returns(featureName);
 
-				var subject = new Store(new BrowserInteropStub());
+				var subject = new Store(new TestStoreInitializer());
 				subject.AddFeature(mockFeature.Object);
 
 				Assert.Same(mockFeature.Object, subject.Features[featureName]);
@@ -33,7 +33,7 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 					.Setup(x => x.GetName())
 					.Returns(featureName);
 
-				var subject = new Store(new BrowserInteropStub());
+				var subject = new Store(new TestStoreInitializer());
 				subject.AddFeature(mockFeature.Object);
 
 				Assert.Throws<ArgumentException>(() =>

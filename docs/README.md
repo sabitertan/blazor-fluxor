@@ -23,8 +23,18 @@ More sample projects will be added as the framework develops.
 
 ## What's new
 
-### New in 0.36
+### New in 1.2.0
+- Prevent JavaScript initialisation from being executed twice.
+- Add `IState.Unsubscribe`
+
+### New in 1.1.0
+- Change store initialization technique to make server-side Blazor apps work on iOS and OSX browsers.
+
+**NOTE:** You must manually add a script reference to `_content/Blazor.Fluxor/index.js` to the host page in server-side apps.
+
+### New in 1.0.0
 - Initialise store in App.razor instead of MainLayout.razor
+- First major release
 
 ### New in 0.35
 - Upgraded to DotNet Core 3

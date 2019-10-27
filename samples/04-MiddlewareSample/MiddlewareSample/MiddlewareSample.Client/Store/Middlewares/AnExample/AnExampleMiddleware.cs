@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Blazor.Fluxor;
 
 namespace MiddlewareSample.Client.Store.Middlewares.AnExample

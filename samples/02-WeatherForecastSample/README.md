@@ -2,7 +2,11 @@
 This sample shows how to have actions trigger side-effects that can perform asynchronous actions, such as calling out to a server over HTTP to obtain data. If you are not familiar with the basic use of setting up features/state/actions in Fluxor then read [Tutorial 1] first.
 
 ## Setting up the project
-As with [Tutorial 1] create a basic Blazor app using the template supplied with Visual Studio. Once you have this, create the `Store` folder as per the first tutorial. As we are modifying the FetchData example create a folder within `Store` named `FetchData` and add a `FetchDataState.cs` class with the following code.
+As with [Tutorial 1] create a basic Blazor app using the template supplied with Visual Studio.
+Add the relevant `<script>` references and `@Store.Initialize` call.
+
+
+Once you have this, create the `Store` folder as per the first tutorial. As we are modifying the FetchData example create a folder within `Store` named `FetchData` and add a `FetchDataState.cs` class with the following code.
 ```c#
 using System.Collections.Generic;
 using System.Linq;

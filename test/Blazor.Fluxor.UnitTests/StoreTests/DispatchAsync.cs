@@ -2,7 +2,6 @@
 using Blazor.Fluxor.UnitTests.SupportFiles;
 using Moq;
 using System;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Blazor.Fluxor.UnitTests.StoreTests
@@ -11,12 +10,12 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 	{
 		public class Dispatch
 		{
-			BrowserInteropStub BrowserInteropStub = new BrowserInteropStub();
+			TestStoreInitializer StoreInitializer;
 
 			[Fact]
 			public void ThrowsArgumentNullException_WhenActionIsNull()
 			{
-				var subject = new Store(BrowserInteropStub);
+				var subject = new Store(StoreInitializer);
 				Assert.Throws<ArgumentNullException>(() => subject.Dispatch(null));
 			}
 
@@ -25,10 +24,11 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 			{
 				var mockMiddleware = MockMiddlewareFactory.Create();
 
-				var subject = new Store(BrowserInteropStub);
+				var subject = new Store(StoreInitializer);
+				subject.Initialize();
 				subject.AddMiddleware(mockMiddleware.Object);
 
-				BrowserInteropStub._TriggerPageLoaded();
+				StoreInitializer.Complete();
 
 				var testAction = new TestAction();
 				using (subject.BeginInternalMiddlewareChange())
@@ -48,9 +48,10 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 				mockMiddleware
 					.Setup(x => x.MayDispatchAction(testAction))
 					.Returns(false);
-				var subject = new Store(BrowserInteropStub);
+				var subject = new Store(StoreInitializer);
+				subject.Initialize();
 
-				BrowserInteropStub._TriggerPageLoaded();
+				StoreInitializer.Complete();
 				subject.Dispatch(testAction);
 
 				mockFeature
@@ -62,10 +63,11 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 			{
 				var testAction = new TestAction();
 				var mockMiddleware = MockMiddlewareFactory.Create();
-				var subject = new Store(BrowserInteropStub);
+				var subject = new Store(StoreInitializer);
+				subject.Initialize();
 				subject.AddMiddleware(mockMiddleware.Object);
 
-				BrowserInteropStub._TriggerPageLoaded();
+				StoreInitializer.Complete();
 				subject.Dispatch(testAction);
 
 				mockMiddleware
@@ -76,11 +78,12 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 			public void NotifiesFeatures()
 			{
 				var mockFeature = MockFeatureFactory.Create();
-				var subject = new Store(BrowserInteropStub);
+				var subject = new Store(StoreInitializer);
 				subject.AddFeature(mockFeature.Object);
+				subject.Initialize();
 
 				var testAction = new TestAction();
-				BrowserInteropStub._TriggerPageLoaded();
+				StoreInitializer.Complete();
 				subject.Dispatch(testAction);
 
 				mockFeature
@@ -94,11 +97,12 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 				var actionToEmit1 = new TestActionFromEffect1();
 				var actionToEmit2 = new TestActionFromEffect2();
 				var actionsToEmit = new object[] { actionToEmit1, actionToEmit2 };
-				var subject = new Store(BrowserInteropStub);
+				var subject = new Store(StoreInitializer);
+				subject.Initialize();
 				subject.AddFeature(mockFeature.Object);
 				subject.AddEffect(new EffectThatEmitsActions<TestAction>(actionsToEmit));
 
-				BrowserInteropStub._TriggerPageLoaded();
+				StoreInitializer.Complete();
 				subject.Dispatch(new TestAction());
 
 				mockFeature
@@ -119,16 +123,22 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 					.Setup(x => x.ShouldReactToAction(It.IsAny<object>()))
 					.Returns(true);
 
-				var subject = new Store(BrowserInteropStub);
+				var subject = new Store(StoreInitializer);
+				subject.Initialize();
 				subject.AddEffect(mockIncompatibleEffect.Object);
 				subject.AddEffect(mockCompatibleEffect.Object);
-				BrowserInteropStub._TriggerPageLoaded();
+				StoreInitializer.Complete();
 
 				var action = new TestAction();
 				subject.Dispatch(action);
 
 				mockIncompatibleEffect.Verify(x => x.HandleAsync(action, It.IsAny<IDispatcher>()), Times.Never);
 				mockCompatibleEffect.Verify(x => x.HandleAsync(action, It.IsAny<IDispatcher>()), Times.Once);
+			}
+
+			public Dispatch()
+			{
+				StoreInitializer = new TestStoreInitializer();
 			}
 		}
 

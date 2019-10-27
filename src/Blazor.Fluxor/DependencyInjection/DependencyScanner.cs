@@ -1,6 +1,6 @@
 ﻿using Blazor.Fluxor.DependencyInjection.DependencyScanners;
-using Blazor.Fluxor.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +31,6 @@ namespace Blazor.Fluxor.DependencyInjection
 				types: allCandidateTypes,
 				scanExcludeList: scanExcludeList,
 				scanIncludeList: scanIncludeList);
-
 
 			IEnumerable<DiscoveredReducerClass> discoveredReducerClasses =
 				ReducerClassessDiscovery.DiscoverReducerClasses(serviceCollection, allNonAbstractCandidateTypes);
@@ -70,8 +69,8 @@ namespace Blazor.Fluxor.DependencyInjection
 			// Register a custom factory for building IStore that will inject all effects
 			serviceCollection.AddScoped(typeof(IStore), serviceProvider =>
 			{
-				var browserInteropService = serviceProvider.GetService<IBrowserInteropService>();
-				var store = new Store(browserInteropService);
+				var storeInitializationStrategy = serviceProvider.GetService<IStoreInitializationStrategy>();
+				var store = new Store(storeInitializationStrategy);
 				foreach (DiscoveredFeatureClass discoveredFeatureClass in discoveredFeatureClasses)
 				{
 					var feature = (IFeature)serviceProvider.GetService(discoveredFeatureClass.FeatureInterfaceGenericType);
