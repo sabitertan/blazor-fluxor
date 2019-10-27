@@ -23,6 +23,10 @@ More sample projects will be added as the framework develops.
 
 ## What's new
 
+### New in 1.2.0
+- Prevent JavaScript initialisation from being executed twice.
+- Add `IState.Unsubscribe`
+
 ### New in 1.1.0
 - Change store initialization technique to make server-side Blazor apps work on iOS and OSX browsers.
 
