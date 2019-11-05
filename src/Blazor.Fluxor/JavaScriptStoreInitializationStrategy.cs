@@ -41,9 +41,9 @@ namespace Blazor.Fluxor
 							if (success)
 								break;
 						}
-						catch (NullReferenceException)
+						catch (Exception e) when (e is NullReferenceException || e is InvalidOperationException)
 						{
-							// NullReferenceException means we are pre-rendering a server-side
+							// NullReferenceException or InvalidOperationException means we are pre-rendering a server-side
 							// Blazor app, so do not initialise any JavaScript.
 							return;
 						}
