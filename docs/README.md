@@ -23,6 +23,11 @@ More sample projects will be added as the framework develops.
 
 ## What's new
 
+### Next release
+Issues fixed
+- https://github.com/mrpmorris/blazor-fluxor/issues/98
+
+
 ### New in 1.2.0
 - Prevent JavaScript initialisation from being executed twice.
 - Add `IState.Unsubscribe`
