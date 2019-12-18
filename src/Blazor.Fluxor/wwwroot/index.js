@@ -1,4 +1,4 @@
-﻿var tryInitializeFluxor = function () {
+﻿window.tryInitializeFluxor = function () {
 	var initializeFluxorScriptElement = document.getElementById("initializeFluxor");
 	if (initializeFluxorScriptElement) {
 		let script = initializeFluxorScriptElement.innerHTML || "";
@@ -7,6 +7,7 @@
 			window.canInitializeFluxor = true;
 			eval(script);
 		}
+		delete window.tryInitializeFluxor;
 		return true;
 	}
 	return false;
