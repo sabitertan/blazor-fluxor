@@ -141,9 +141,9 @@ namespace Blazor.Fluxor
 			return (RenderTreeBuilder renderer) =>
 			{
 				var scriptBuilder = new StringBuilder();
-				scriptBuilder.AppendLine("if (!window.fluxorInitialized) {");
+				scriptBuilder.AppendLine("if (window.canInitializeFluxor) {");
 				{
-					scriptBuilder.AppendLine("window.fluxorInitialized = true;");
+					scriptBuilder.AppendLine("delete window.canInitializeFluxor;");
 					foreach (IMiddleware middleware in Middlewares)
 					{
 						string middlewareScript = middleware.GetClientScripts();
