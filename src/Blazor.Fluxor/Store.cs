@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace Blazor.Fluxor
 {
@@ -103,7 +99,7 @@ namespace Blazor.Fluxor
 		}
 
 		/// <see cref="IStore.AddMiddleware(IMiddleware)"/>
-		public void AddMiddleware(IMiddleware middleware)
+		public async void AddMiddleware(IMiddleware middleware)
 		{
 			Middlewares.Add(middleware);
 			ReversedMiddlewares.Insert(0, middleware);
@@ -111,7 +107,7 @@ namespace Blazor.Fluxor
 			// done the first time Dispatch is called
 			if (HasActivatedStore)
 			{
-				middleware.Initialize(this);
+				await middleware.InitializeAsync(this);
 				middleware.AfterInitializeAllMiddlewares();
 			}
 		}
@@ -141,9 +137,9 @@ namespace Blazor.Fluxor
 			return (RenderTreeBuilder renderer) =>
 			{
 				var scriptBuilder = new StringBuilder();
-				scriptBuilder.AppendLine("if (!window.fluxorInitialized) {");
+				scriptBuilder.AppendLine("if (window.canInitializeFluxor) {");
 				{
-					scriptBuilder.AppendLine("window.fluxorInitialized = true;");
+					scriptBuilder.AppendLine("delete window.canInitializeFluxor;");
 					foreach (IMiddleware middleware in Middlewares)
 					{
 						string middlewareScript = middleware.GetClientScripts();
@@ -171,9 +167,12 @@ namespace Blazor.Fluxor
 				effect.HandleAsync(action, this);
 		}
 
-		private void InitializeMiddlewares()
+		private async void InitializeMiddlewares()
 		{
-			Middlewares.ForEach(x => x.Initialize(this));
+			foreach(IMiddleware middleware in Middlewares)
+			{
+				await middleware.InitializeAsync(this);
+			}
 			Middlewares.ForEach(x => x.AfterInitializeAllMiddlewares());
 		}
 

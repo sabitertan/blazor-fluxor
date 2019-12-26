@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
+using System.Threading.Tasks;
 
 namespace Blazor.Fluxor.Routing
 {
@@ -25,10 +26,10 @@ namespace Blazor.Fluxor.Routing
 		}
 
 
-		/// <see cref="IMiddleware.Initialize(IStore)"/>
-		public override void Initialize(IStore store)
+		/// <see cref="IMiddleware.InitializeAsync(IStore)"/>
+		public async override ValueTask InitializeAsync(IStore store)
 		{
-			base.Initialize(store);
+			await base.InitializeAsync(store);
 			// If the URL changed before we initialized then dispatch an action
 			Store.Dispatch(new Go(NavigationManager.Uri));
 		}

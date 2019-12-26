@@ -23,10 +23,9 @@ More sample projects will be added as the framework develops.
 
 ## What's new
 
-### Next release
-Issues fixed
-- https://github.com/mrpmorris/blazor-fluxor/issues/98
-
+### New in 1.3.2
+- Fixed bug #110 (Cannot use Redux Dev Tools on server side)
+- 
 ### New in 1.3.1
 - Fixed bug #98 (Cannot initialize store)
 

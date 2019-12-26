@@ -31,7 +31,7 @@ namespace Blazor.Fluxor
 				throw new ArgumentNullException(nameof(configure));
 
 			// We only use an instance so middleware can create extensions to the Options
-			var options = new Options();
+			var options = new Options(serviceCollection);
 			configure(options);
 
 			// Register all middleware types with dependency injection

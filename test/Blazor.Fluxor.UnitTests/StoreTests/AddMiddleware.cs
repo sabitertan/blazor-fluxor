@@ -21,7 +21,7 @@ namespace Blazor.Fluxor.UnitTests.StoreTests
 				subject.AddMiddleware(mockMiddleware.Object);
 
 				mockMiddleware
-					.Verify(x => x.Initialize(subject));
+					.Verify(x => x.InitializeAsync(subject));
 			}
 
 			[Fact]

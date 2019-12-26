@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Blazor.Fluxor
 {
@@ -23,8 +24,12 @@ namespace Blazor.Fluxor
 		/// <see cref="IMiddleware.GetClientScripts"/>
 		public virtual string GetClientScripts() => null;
 
-		/// <see cref="IMiddleware.Initialize(IStore)"/>
-		public virtual void Initialize(IStore store) => Store = store;
+		/// <see cref="IMiddleware.InitializeAsync(IStore)"/>
+		public virtual ValueTask InitializeAsync(IStore store)
+		{
+			Store = store;
+			return new ValueTask(Task.CompletedTask);
+		}
 
 		/// <see cref="IMiddleware.AfterInitializeAllMiddlewares"/>
 		public virtual void AfterInitializeAllMiddlewares() { }

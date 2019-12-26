@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Blazor.Fluxor;
 
 namespace MiddlewareSample.Client.Store.Middlewares.AnExample
@@ -10,7 +11,7 @@ namespace MiddlewareSample.Client.Store.Middlewares.AnExample
 			return "alert('AnExampleMiddleware script inserted successfully');";
 		}
 
-		public override void Initialize(IStore store) => base.Initialize(store);
+		public override ValueTask InitializeAsync(IStore store) => base.InitializeAsync(store);
 
 		public override void AfterInitializeAllMiddlewares()
 		{

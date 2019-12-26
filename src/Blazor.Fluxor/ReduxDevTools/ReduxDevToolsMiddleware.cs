@@ -1,8 +1,10 @@
 ﻿using Blazor.Fluxor.ReduxDevTools.CallbackObjects;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Json = System.Text.Json.JsonSerializer;
 
 namespace Blazor.Fluxor.ReduxDevTools
@@ -31,18 +33,19 @@ namespace Blazor.Fluxor.ReduxDevTools
 			ReduxDevToolsInterop.Commit += OnCommit;
 		}
 
-		/// <see cref="IMiddleware.Initialize(IStore)"/>
-		public override void Initialize(IStore store)
+		/// <see cref="IMiddleware.GetClientScripts"/>
+		public override string GetClientScripts() => ReduxDevToolsInterop.GetClientScripts();
+
+		/// <see cref="IMiddleware.InitializeAsync(IStore)"/>
+		public async override ValueTask InitializeAsync(IStore store)
 		{
-			base.Initialize(store);
-			ReduxDevToolsInterop.Init(GetState());
+			await base.InitializeAsync(store);
+			await ReduxDevToolsInterop.InitAsync(GetState());
 		}
 
 		/// <see cref="IMiddleware.MayDispatchAction(object)"/>
-		public override bool MayDispatchAction(object action)
-		{
-			return SequenceNumberOfCurrentState == SequenceNumberOfLatestState;
-		}
+		public override bool MayDispatchAction(object action) => 
+			SequenceNumberOfCurrentState == SequenceNumberOfLatestState;
 
 		/// <see cref="IMiddleware.AfterDispatch(object)"/>
 		public override void AfterDispatch(object action)
@@ -63,9 +66,9 @@ namespace Blazor.Fluxor.ReduxDevTools
 			return state;
 		}
 
-		private void OnCommit(object sender, EventArgs e)
+		private async void OnCommit(object sender, EventArgs e)
 		{
-			ReduxDevToolsInterop.Init(GetState());
+			await ReduxDevToolsInterop.InitAsync(GetState());
 			SequenceNumberOfCurrentState = SequenceNumberOfLatestState;
 		}
 
@@ -91,12 +94,6 @@ namespace Blazor.Fluxor.ReduxDevTools
 					feature.RestoreState(stronglyTypedFeatureState);
 				}
 			}
-		}
-
-		/// <see cref="IMiddleware.GetClientScripts"/>
-		public override string GetClientScripts()
-		{
-			return ReduxDevToolsInterop.GetClientScripts();
 		}
 	}
 }

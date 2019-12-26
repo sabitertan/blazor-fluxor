@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Blazor.Fluxor;
+using Blazor.Fluxor.ReduxDevTools;
+using Blazor.Fluxor.Routing;
 
 namespace CounterSample
 {

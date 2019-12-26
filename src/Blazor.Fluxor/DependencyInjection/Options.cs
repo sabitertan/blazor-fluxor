@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,6 +14,12 @@ namespace Blazor.Fluxor.DependencyInjection
 		internal static bool DependencyInjectionEnabled { get; private set; }
 		internal static AssemblyScanSettings[] DependencyInjectionAssembliesToScan { get; private set; } = new AssemblyScanSettings[0];
 		internal static Type[] MiddlewareTypes = new Type[0];
+		public readonly IServiceCollection ServiceCollection;
+
+		public Options(IServiceCollection serviceCollection)
+		{
+			ServiceCollection = serviceCollection;
+		}
 
 		/// <summary>
 		/// Enables automatic discovery of features/effects/reducers
@@ -45,6 +52,7 @@ namespace Blazor.Fluxor.DependencyInjection
 			if (Array.IndexOf(MiddlewareTypes, typeof(TMiddleware)) > -1)
 				return this;
 
+			ServiceCollection.AddScoped(typeof(TMiddleware));
 			Assembly assembly = typeof(TMiddleware).Assembly;
 			string @namespace = typeof(TMiddleware).Namespace;
 
