@@ -14,8 +14,15 @@ namespace Blazor.Fluxor.DependencyInjection
 		internal static bool DependencyInjectionEnabled { get; private set; }
 		internal static AssemblyScanSettings[] DependencyInjectionAssembliesToScan { get; private set; } = new AssemblyScanSettings[0];
 		internal static Type[] MiddlewareTypes = new Type[0];
+		/// <summary>
+		/// Service collection for registering services
+		/// </summary>
 		public readonly IServiceCollection ServiceCollection;
 
+		/// <summary>
+		/// Creates a new instance
+		/// </summary>
+		/// <param name="serviceCollection"></param>
 		public Options(IServiceCollection serviceCollection)
 		{
 			ServiceCollection = serviceCollection;
