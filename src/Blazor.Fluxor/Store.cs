@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,15 +18,17 @@ namespace Blazor.Fluxor
 		/// <see cref="IStore.Initialized"/>
 		public Task Initialized => InitializedCompletionSource.Task;
 
+		private readonly object SyncRoot = new object();
 		private IStoreInitializationStrategy StoreInitializationStrategy;
 		private readonly Dictionary<string, IFeature> FeaturesByName = new Dictionary<string, IFeature>(StringComparer.InvariantCultureIgnoreCase);
 		private readonly List<IEffect> Effects = new List<IEffect>();
 		private readonly List<IMiddleware> Middlewares = new List<IMiddleware>();
 		private readonly List<IMiddleware> ReversedMiddlewares = new List<IMiddleware>();
-		private readonly Queue<object> QueuedActions = new Queue<object>();
+		private readonly ConcurrentQueue<object> QueuedActions = new ConcurrentQueue<object>();
 		private readonly TaskCompletionSource<bool> InitializedCompletionSource = new TaskCompletionSource<bool>();
 
-		private int BeginMiddlewareChangeCount;
+		private volatile bool IsDispatching;
+		private volatile int BeginMiddlewareChangeCount;
 		private bool HasActivatedStore;
 		private bool IsInsideMiddlewareChange => BeginMiddlewareChangeCount > 0;
 		private Action<IFeature, object> IFeatureReceiveDispatchNotificationFromStore;
@@ -70,16 +73,15 @@ namespace Blazor.Fluxor
 			if (IsInsideMiddlewareChange)
 				return;
 
-			// If there was already an action in the Queue then an action dispatch is already in progress, so we will just
+			// If a dequeue is already in progress, we will just
 			// let this new action be added to the queue and then exit
 			// Note: This is to cater for the following scenario
 			//	1: An action is dispatched
 			//	2: An effect is triggered
 			//	3: The effect immediately dispatches a new action
 			// The Queue ensures it is processed after its triggering action has completed rather than immediately
-			bool wasAlreadyDispatching = QueuedActions.Any();
 			QueuedActions.Enqueue(action);
-			if (wasAlreadyDispatching)
+			if (IsDispatching)
 				return;
 
 			// HasActivatedStore is set to true when the page finishes loading
@@ -200,26 +202,32 @@ namespace Blazor.Fluxor
 
 		private void DequeueActions()
 		{
-			while (QueuedActions.Any())
+			lock (SyncRoot)
 			{
-				// We want the next action but we won't dequeue it because we use
-				// a non-empty queue as an indication that a Dispatch() loop is already in progress
-				object nextActionToDequeue = QueuedActions.Peek();
-				// Only process the action if no middleware vetos it
-				if (Middlewares.All(x => x.MayDispatchAction(nextActionToDequeue)))
+				IsDispatching = true;
+				try
 				{
-					ExecuteMiddlewareBeforeDispatch(nextActionToDequeue);
+					while (QueuedActions.TryDequeue(out object nextActionToProcess))
+					{
+						// Only process the action if no middleware vetos it
+						if (Middlewares.All(x => x.MayDispatchAction(nextActionToProcess)))
+						{
+							ExecuteMiddlewareBeforeDispatch(nextActionToProcess);
 
-					// Notify all features of this action
-					foreach (var featureInstance in FeaturesByName.Values)
-						IFeatureReceiveDispatchNotificationFromStore(featureInstance, nextActionToDequeue);
+							// Notify all features of this action
+							foreach (var featureInstance in FeaturesByName.Values)
+								IFeatureReceiveDispatchNotificationFromStore(featureInstance, nextActionToProcess);
 
-					ExecuteMiddlewareAfterDispatch(nextActionToDequeue);
+							ExecuteMiddlewareAfterDispatch(nextActionToProcess);
 
-					TriggerEffects(nextActionToDequeue);
+							TriggerEffects(nextActionToProcess);
+						}
+					}
 				}
-				// Now remove the processed action from the queue so we can move on to the next (if any)
-				QueuedActions.Dequeue();
+				finally
+				{
+					IsDispatching = false;
+				}
 			}
 		}
 	}
